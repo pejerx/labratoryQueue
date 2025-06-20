@@ -1,0 +1,12 @@
+.queue-display {
+  background: white;
+  border-radius: 6px;
+  padding: 0.5rem;
+}
+
+.queue-display .number {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-top: 0.5rem;
+}
+
