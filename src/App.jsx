@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import useQueue from './hooks/useQueue';
 
@@ -7,7 +7,9 @@ function App() {
     waitingQueue,
     addCustomer,
     assignCustomer,
+    assignAllCustomers,
     resetQueue,
+    removeFromQueue,
     priorityServing,
     regular1Serving,
     regular2Serving,
@@ -16,10 +18,13 @@ function App() {
     regular2Queue,
   } = useQueue();
 
-  // Format numbers like "0001", "0025", etc.
   const formatNumber = (num) => String(num).padStart(4, '0');
 
-  // Displays the currently served customer with timer
+  const [showAllWaiting, setShowAllWaiting] = useState(false);
+  const [showAllPriority, setShowAllPriority] = useState(false);
+  const [showAllReg1, setShowAllReg1] = useState(false);
+  const [showAllReg2, setShowAllReg2] = useState(false);
+
   const renderNowServing = (cust) =>
     cust ? (
       <div className="now-serving">
@@ -29,21 +34,36 @@ function App() {
       <div className="now-serving">Idle</div>
     );
 
-  // Displays a list of queued customers below the cashier
-  const renderQueue = (queue) => {
-    if (!Array.isArray(queue)) return <p className="empty">Queue not available</p>;
+  const QueueList = ({ queue, showAll, setShowAll, limit = 2 }) => {
+    const items = showAll ? queue : queue.slice(0, limit);
 
-    return queue.length ? (
-      queue.map((cust) => (
-        <div
-          key={cust.id}
-          className={`queue-item ${cust.priority ? 'priority' : ''}`}
-        >
-          {formatNumber(cust.number)} | {cust.priority ? 'Priority' : 'Regular'}
-        </div>
-      ))
-    ) : (
-      <p className="empty">Empty</p>
+    return (
+      <>
+        {items.length ? (
+          items.map((cust) => (
+            <div
+              key={cust.id}
+              className={`queue-item ${cust.priority ? 'priority' : ''}`}
+            >
+              {formatNumber(cust.number)} | {cust.priority ? 'Priority' : 'Regular'}
+              <button
+                className="delete-btn"
+                title="Remove"
+                onClick={() => removeFromQueue(cust.id)}
+              >
+                x
+              </button>
+            </div>
+          ))
+        ) : (
+          <p className="empty">Empty</p>
+        )}
+        {queue.length > limit && (
+          <button className="see-toggle" onClick={() => setShowAll(!showAll)}>
+            {showAll ? 'See Less' : 'See 10'}
+          </button>
+        )}
+      </>
     );
   };
 
@@ -54,37 +74,52 @@ function App() {
       <div className="controller">
         <button onClick={addCustomer}>Add Customer</button>
         <button onClick={assignCustomer}>Assign Customer</button>
+        <button onClick={assignAllCustomers}>Assign All</button>
         <button onClick={resetQueue}>Reset Queue</button>
       </div>
 
       <div className="main-content">
-      
         <div className="waiting-queue">
           <h3>Waiting Queue</h3>
-          {renderQueue(waitingQueue)}
+          <QueueList
+            queue={waitingQueue}
+            showAll={showAllWaiting}
+            setShowAll={setShowAllWaiting}
+          />
         </div>
 
-        {/* Cashiers */}
         <div className="cashier-area">
           <div className="cashier">
             <h4>Priority Cashier</h4>
             {renderNowServing(priorityServing)}
             <h5>Queue:</h5>
-            {renderQueue(priorityQueue)}
+            <QueueList
+              queue={priorityQueue}
+              showAll={showAllPriority}
+              setShowAll={setShowAllPriority}
+            />
           </div>
 
           <div className="cashier">
             <h4>Regular Cashier 1</h4>
             {renderNowServing(regular1Serving)}
             <h5>Queue:</h5>
-            {renderQueue(regular1Queue)}
+            <QueueList
+              queue={regular1Queue}
+              showAll={showAllReg1}
+              setShowAll={setShowAllReg1}
+            />
           </div>
 
           <div className="cashier">
             <h4>Regular Cashier 2</h4>
             {renderNowServing(regular2Serving)}
             <h5>Queue:</h5>
-            {renderQueue(regular2Queue)}
+            <QueueList
+              queue={regular2Queue}
+              showAll={showAllReg2}
+              setShowAll={setShowAllReg2}
+            />
           </div>
         </div>
       </div>

@@ -15,7 +15,7 @@
   padding: 0.5rem 1rem;
   background-color: #fbc02d;
   border: none;
-  border-radius: 4px;
+  border-radius: 4px; 
   cursor: pointer;
   font-weight: bold;
 }
@@ -62,6 +62,9 @@
   background: #fff;
   border-radius: 4px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;
 }
 
 .now-serving {
@@ -80,3 +83,37 @@
   font-style: italic;
   color: #999;
 }
+
+.see-toggle {
+  margin-top: 6px;
+  background-color: #ffd54f;
+  color: #333;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.see-toggle:hover {
+  background-color: #ffca28;
+}
+
+.queue-item.priority {
+  color: #d32f2f;
+  background-color: #ffebee;
+  border-left: 5px solid #b71c1c;
+}
+
+.delete-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #d32f2f;
+  font-size: 1rem;
+}
+
+.delete-btn:hover {
+  color: #b71c1c;
+}
+
